@@ -18,19 +18,21 @@ Sub challenge()
     Dim date_value As Long
     Dim open_value As Double
     Dim close_value As Double
-    Dim volume As Long
+    Dim volume As LongLong
     Dim last_row As Long
-    Dim ticker_counter As Integer
+    Dim counter As Integer
     
-    last_row = 2000
-    ticker_counter = 1
+    last_row = 22771
+    counter = 1
 
     For ticker_row = 2 To last_row
         ticker = Cells(ticker_row, 1)
         
         'compare current row to previous row to see if ticker is the same
         If Cells(ticker_row - 1, 1) <> ticker Then
-
+            open_value = Cells(ticker_row, 3)
+            volume = 0
+            counter = counter + 1
             
         'compare current row to row in front to see if ticker is the same
         ElseIf Cells(ticker_row + 1, 1) <> ticker Then
@@ -42,10 +44,10 @@ Sub challenge()
         
         yearly_change = close_value - open_value
         
-        Range("I" & ticker_counter) = ticker
-        Range("J" & ticker_counter) = yearly_change
+        Range("I" & counter) = ticker
+        Range("J" & counter) = yearly_change
         Range("J:J").NumberFormat = "$0.00"
-        Range("L" & ticker_counter) = volume
+        Range("L" & counter) = volume
         
         If close_value = 0 Then
         ElseIf close_value <> 0 Then
@@ -53,13 +55,17 @@ Sub challenge()
         Else 'do nothing
         End If
         
-        Range("K" & ticker_counter) = percentage_change
+        Range("K" & counter) = percentage_change
         Range("K:K").NumberFormat = "0.00%"
         
     
     Next ticker_row
     
-    For ticker_row_1 = 2 To last_row
+    Dim table_last_row As Long
+    
+    table_last_row = 52
+    
+    For ticker_row_1 = 2 To table_last_row
     
         If Cells(ticker_row_1, 10) > 0 Then
         Cells(ticker_row_1, 10).Interior.ColorIndex = 4
@@ -70,10 +76,34 @@ Sub challenge()
         Else 'do nothing
         End If
         
-        
     Next ticker_row_1
+    
+    For ticker_row_2 = 2 To table_last_row
+    
+        If Cells(2, 11) < Cells(ticker_row_2, 11) Then
+            greatest_percentage_increase = Cells(ticker_row_2, 11)
+            greatest_percentage_increase_ticker = Cells(ticker_row_2, 9)
+        ElseIf Cells(2, 11) > Cells(ticker_row_2, 11) Then
+            greatest_percent_decrease = Cells(ticker_row_2, 11)
+            greatest_percentage_decrease_ticker = Cells(ticker_row_2, 9)
+        Else 'do nothing
+        End If
         
+        If Cells(2, 12) < Cells(ticker_row_2, 12) Then
+            greatest_total_volume = Cells(ticker_row_2, 12)
+            greatest_total_volume_ticker = Cells(ticker_row_2, 9)
+        Else 'do nothing
+        End If
+            
+     Next ticker_row_2
+            
+     Range("P2") = greatest_percentage_increase_ticker
+     Range("P3") = greatest_percentage_decrease_ticker
+     Range("P4") = greatest_total_volume_ticker
+     Range("Q2") = greatest_percentage_increase
+     Range("Q3") = greatest_percentage_decrease
+     Range("Q4") = greatest_total_volume
+     Range("Q2:Q3").NumberFormat = "0.00%"
 
 End Sub
-
 
